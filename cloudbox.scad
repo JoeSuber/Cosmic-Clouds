@@ -9,6 +9,7 @@ iceboxdepth = 30;
 icebox=[frontpane+lip*2, icebase+lip*2, iceboxdepth];
 ledstrip=12;
 leddiam=5;
+
 //windowpane();
 //ledshape();
 housing();
@@ -59,13 +60,13 @@ module housing(cornerrad=9, lip=lip, windowlip=5){
     difference(){
             translate([0,0,(paneheight+iceboxdepth)/2+cornerrad])
             minkowski(){
-                sphere(r=cornerrad, $fn=16);
+                sphere(r=cornerrad, $fn=24);
                 cube([frontpane, icebase, paneheight+iceboxdepth], center=true);
         }
             translate([0,0,((paneheight+iceboxdepth)/2+cornerrad)*inoutz])
             scale([inoutx,inouty,inoutz])
                 minkowski(){
-                    sphere(r=cornerrad, $fn=16);
+                    sphere(r=cornerrad, $fn=24);
                     cube([frontpane, icebase, paneheight+iceboxdepth], center=true);
         }
         metalbox();
