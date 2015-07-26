@@ -26,6 +26,7 @@ module metalbox (dims=icebox) {
         cube(dims, center=true);
 }
 
+//default values are for standard through-hole solder mount 5mm led body
 module ledshape(diam=leddiam, baseht=1, bodyht=6.3, legs=1.25, leght=27, basemult=1.19) {
     difference(){
         union(){
@@ -52,11 +53,14 @@ module ledstrip(quant=28, space=frontpane-leddiam) {
     }
 }
 
+// put cornerrad and wallthickness equal to get smothest transitions
 module housing(cornerrad=9, lip=lip, windowlip=5){
     wallthickness = 9;
+    //
     inoutx = (frontpane+cornerrad-wallthickness*2)/ (frontpane+cornerrad);
     inouty = (icebase+cornerrad-wallthickness*2)/ (icebase+cornerrad);
     inoutz =  (paneheight+iceboxdepth+cornerrad-wallthickness*2)/ (paneheight+cornerrad+iceboxdepth);
+    // make the hollow box shape with rounded corners, in & out
     difference(){
             translate([0,0,(paneheight+iceboxdepth)/2+cornerrad])
             minkowski(){
@@ -69,13 +73,20 @@ module housing(cornerrad=9, lip=lip, windowlip=5){
                     sphere(r=cornerrad, $fn=24);
                     cube([frontpane, icebase, paneheight+iceboxdepth], center=true);
         }
+        // cut out for dry-ice-holding metal box
         metalbox();
+        // the foremost front cutout for view
         translate([0,icebase/2+cornerrad-panethick/2,0])
            windowpane();
+        // the bigger cutout for the actual glass
          translate([0,icebase/2+panethick/2,0])
             windowpane(dims=[frontpane+lip*2, paneheight+lip*2, cornerrad+.1]);
+            echo("Glass pane should be cut to just under:  x = ",frontpane+lip*2, "  y = ", paneheight+lip*2);
+        // LED should be clear white and wired to be slightly over-driven. BRIGHT!
         translate([-frontpane/2,icebase/2+4,iceboxdepth+ledstrip/2])
-        #ledstrip(quant=28, space=frontpane);
+            #ledstrip(quant=28, space=frontpane);
+        // a (metal?) plate in the top and a place to secure the methanol or ethanol soaked felt/sponge.
+        // also, electrical entry points for high voltage and/or instrumentation:
         translate([0,0,iceboxdepth+ledstrip+paneheight-cornerrad-3]){
             #cube([frontpane-cornerrad*2,60,3], center=true);
             for(i=[1,-1], j=[1,-1]){
